@@ -1,36 +1,41 @@
-# Compiler and flags
 CC = gcc
-CFLAGS = -Iinclude -Wall -g
+CFLAGS = -Wall -Iinclude -g
 
-# Directories
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
+LIB_DIR = lib
 
-# Files
-SRCS = $(wildcard $(SRC_DIR)/*.c)
-OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
-TARGET = $(BIN_DIR)/client
+SRCS = $(SRC_DIR)/main.c
+LIB_OBJS = $(OBJ_DIR)/mystrfunctions.o $(OBJ_DIR)/myfilefunctions.o
+LIB = $(LIB_DIR)/libmyutils.a
+TARGET = $(BIN_DIR)/client_static
 
-# Default target
-all: $(TARGET)
+# Default build
+all: $(LIB) $(TARGET)
 
-# Linking rule
-$(TARGET): $(OBJS) | $(BIN_DIR)
-	$(CC) $(OBJS) -o $(TARGET)
+# Build static library
+$(LIB): $(LIB_OBJS) | $(LIB_DIR)
+	ar rcs $@ $(LIB_OBJS)
 
-# Compilation rule
+# Compile library objects
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Ensure obj and bin dirs exist
+# Build final executable
+$(TARGET): $(SRCS) $(LIB) | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ -o $@
+
+# Ensure directories exist
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
-
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
+$(LIB_DIR):
+	mkdir -p $(LIB_DIR)
 
-# Clean rule
+# Clean
 clean:
-	rm -rf $(OBJ_DIR)/*.o $(TARGET)
+	rm -rf $(OBJ_DIR)/*.o $(BIN_DIR)/* $(LIB_DIR)/*.a
+
 
