@@ -53,4 +53,11 @@ $(DYN_TARGET): obj/main.o $(DYN_LIB)
 # Run dynamic client
 run_dynamic: $(DYN_TARGET)
 	LD_LIBRARY_PATH=lib ./$(DYN_TARGET)
+install:
+	@echo "Installing mycat executable and man page..."
+	sudo cp bin/client /usr/local/bin/mycat
+	sudo mkdir -p /usr/local/share/man/man3
+	sudo cp man/man3/mycat.1 /usr/local/share/man/man3/mycat.3
+	sudo gzip -f /usr/local/share/man/man3/mycat.3
+
 
