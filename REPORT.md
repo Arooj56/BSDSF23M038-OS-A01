@@ -1,45 +1,25 @@
-1. Linking Rule in Makefile
-$(TARGET): $(OBJECTS)
+1. Makefile Comparison (Part 2 vs Part 3)
 
+Part 2: directly compiled .c files → object files → executable
 
-This rule tells make to link all object files (.o) listed in $(OBJECTS) into the final executable $(TARGET).
+Part 3: object files from utility .c files are bundled into a static library (.a), then linked to main program.
 
-The Makefile first compiles individual .c files into .o files, then this rule combines them.
+Key changes:
 
-Difference from linking against a library:
+Added ar command to build library
 
-When linking against a library, you don’t list all object files manually. Instead, you link using a library flag, e.g., -lmylib or libmylib.a.
+Modified TARGET rule to link with library instead of individual objects
 
-Libraries allow reusable, precompiled code, whereas here you link raw object files.
+New LIB_DIR and LIB variables
 
-2. Git Tag
+2. Purpose of ar and ranlib
 
-A Git tag is a reference to a specific commit, usually marking a release or stable version.
+ar → archive object files into a static library (.a)
 
-Why useful:
+ranlib → creates an index for faster linking; ensures linker can find all symbols
 
-Easily identify important milestones.
+3. Symbols in client_static
 
-Roll back or deploy a specific version quickly.
+Running nm bin/client_static shows mystrlen, mystrcpy, etc. are present
 
-Simple tag vs Annotated tag:
-
-Simple tag: lightweight pointer to a commit, no extra info.
-
-Annotated tag: stores author, date, and a message — recommended for official releases.
-
-3. GitHub Release
-
-A Release on GitHub is a formal way to distribute a specific version of your project.
-
-Purpose:
-
-Share a stable snapshot with others.
-
-Track version history visually.
-
-Significance of attaching binaries:
-
-Users can download and run the program without compiling.
-
-Useful for executables, libraries, or other deliverables that need to be ready-to-use.
+This means static linking copies the library code into the executable, unlike dynamic linking which keeps code in a separate .so file
