@@ -1,6 +1,6 @@
 # BSDSF23M038-OS-A01
 
-# 📌 Multi-File C Project – Build Automation, Libraries, and Man Pages  
+# 📌 Multi-File C Project   
 
 ## 📖 Overview  
 This project demonstrates how to structure, build, and document a C application professionally.  
@@ -38,9 +38,6 @@ The final program provides string and file utility functions (e.g., `mystrlen`, 
 ├── REPORT.md # Detailed report (answers to assignment questions)
 └── README.md # Project overview
 
-markdown
-Copy code
-
 ---
 
 ## ⚙️ Features Implemented  
@@ -66,40 +63,22 @@ Copy code
   man mycat
 🚀 Build & Run Instructions
 1️⃣ Clone Repository
-bash
-Copy code
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
 2️⃣ Build the Project
 Build default client:
-
-bash
-Copy code
 make
 Build static version:
-
-bash
-Copy code
 make client_static
 Build dynamic version:
-
-bash
-Copy code
 make client_dynamic
 3️⃣ Run Executables
-bash
-Copy code
 ./bin/client
 ./bin/client_static
 LD_LIBRARY_PATH=lib ./bin/client_dynamic
 4️⃣ Install (requires sudo)
-bash
-Copy code
 sudo make install
 Now you can run mycat and view its man page anywhere:
-
-bash
-Copy code
 mycat filename.txt
 man mycat
 📦 Git Workflow Used
