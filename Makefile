@@ -38,4 +38,19 @@ $(LIB_DIR):
 clean:
 	rm -rf $(OBJ_DIR)/*.o $(BIN_DIR)/* $(LIB_DIR)/*.a
 
+# === Dynamic Library Build ===
+DYN_LIB = lib/libmyutils.so
+DYN_TARGET = bin/client_dynamic
+
+# Build dynamic library
+$(DYN_LIB): $(OBJECTS)
+	$(CC) -shared -o $@ $^
+
+# Build dynamic client
+$(DYN_TARGET): obj/main.o $(DYN_LIB)
+	$(CC) -o $@ obj/main.o -Llib -lmyutils
+
+# Run dynamic client
+run_dynamic: $(DYN_TARGET)
+	LD_LIBRARY_PATH=lib ./$(DYN_TARGET)
 
