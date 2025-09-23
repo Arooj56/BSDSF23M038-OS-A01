@@ -1,21 +1,108 @@
-Feature 4: Dynamic Library
-1. What is Position-Independent Code (-fPIC) and why is it a fundamental requirement for creating shared libraries?
+REPORT.md
+Part 2: Multi-file Build
 
-Position-Independent Code (PIC) means that the compiled code does not depend on being loaded at a fixed memory address. Instead, it uses relative addressing, so the operating system’s dynamic loader can place the shared library anywhere in memory at runtime.
-This is fundamental for shared libraries because the same .so file can be loaded by multiple programs simultaneously at different memory addresses without conflicts.
+Q1. Explain the linking rule in this part's Makefile: $(TARGET): $(OBJECTS). How does it differ from a Makefile rule that links against a library?
 
-2. Explain the difference in file size between your static and dynamic clients. Why does this difference exist?
+This rule means: "to build the target executable, first compile all object files and then link them together."
 
-The static client (client_static) includes a full copy of all library code inside the executable. This makes the executable larger.
+When linking against a library, instead of providing all .o files, we pass the -l and -L flags to the linker so it searches for compiled functions inside a library file.
 
-The dynamic client (client_dynamic) only stores references to the shared library and depends on it being loaded at runtime. The actual code remains in libmyutils.so. This makes the executable much smaller.
+Difference: direct linking requires object files, library linking requires precompiled reusable library.
 
-This difference exists because static linking duplicates code in each executable, while dynamic linking reuses a single shared copy in memory.
+Q2. What is a git tag and why is it useful? Difference between simple and annotated tag?
 
-3. What is the LD_LIBRARY_PATH environment variable? Why was it necessary to set it for your program to run, and what does this tell you about the responsibilities of the operating system's dynamic loader?
+A git tag is a pointer to a specific commit, usually marking a release version.
 
-LD_LIBRARY_PATH is an environment variable that tells the dynamic loader where to search for shared libraries at runtime.
+Simple tag: lightweight marker, no metadata.
 
-It was necessary to set it because by default, the loader only searches in system library paths (e.g., /lib, /usr/lib). Since our libmyutils.so is in a custom ./lib directory, we had to explicitly add it.
+Annotated tag: includes message, author, date, and is stored as a full Git object. More suitable for official releases.
 
-This shows that the operating system’s dynamic loader is responsible for locating and loading the required shared libraries before the program starts execution.
+Q3. What is the purpose of creating a "Release" on GitHub? Why attach binaries?
+
+A release is an official packaged version of your project.
+
+Attaching binaries allows users to run the program directly without compiling the source code.
+
+Part 3: Static Library
+
+Q1. Compare Makefile from Part 2 and Part 3. Key differences?
+
+Part 2: linked object files directly into the executable.
+
+Part 3: bundled object files into a static library (libmyutils.a) using ar, then linked that library into the executable.
+
+Variables changed: LIB, LIB_OBJS, and rules for ar.
+
+Q2. Purpose of ar command? Why ranlib?
+
+ar (archiver) creates static library archives from object files.
+
+ranlib indexes the archive so the linker can access symbols faster (on some systems ar rcs already handles this).
+
+Q3. When running nm on client_static, are function symbols (e.g., mystrlen) present? What does this tell you?
+
+No, they are not present in the final executable because the code from the static library was copied directly into the binary.
+
+This shows static linking embeds the library’s code inside the executable.
+
+Part 4: Dynamic Library
+
+Q1. What is Position-Independent Code (-fPIC) and why required?
+
+-fPIC ensures the compiled code can be loaded at any memory address.
+
+This is necessary because shared libraries may be mapped into different locations in different processes.
+
+Q2. Why file size difference between static and dynamic clients?
+
+Static client (client_static) contains the full code of all linked functions, making it larger.
+
+Dynamic client (client_dynamic) only contains references to the shared library, so it is smaller.
+
+Q3. What is LD_LIBRARY_PATH? Why necessary?
+
+Environment variable telling the OS dynamic loader where to search for .so libraries.
+
+Without it, the system does not know where to find libmyutils.so.
+
+It shows that the loader is responsible for finding and loading shared libraries at runtime.
+
+Part 5: Man Pages
+
+Q1. What sections must a man page contain?
+
+.TH → Title Header
+
+.SH NAME → Function/program name + one-line description
+
+.SH SYNOPSIS → How to use the function/program
+
+.SH DESCRIPTION → Detailed explanation
+
+.SH AUTHOR → Author name and email
+
+Q2. Why add an install target in Makefile?
+
+To simulate a real installation process where executables and documentation are copied into system directories.
+
+Makes the project feel professional and usable system-wide.
+
+Q3. Why gzip man pages?
+
+System man directories expect compressed files for efficiency (mycat.3.gz).
+
+Ensures the man command recognizes and loads them properly.
+
+Final Part: Wrap-up
+
+This project guided me through:
+
+Writing multi-file C programs
+
+Building and linking static and dynamic libraries
+
+Using make for automation
+
+Creating Git branches, tags, and releases
+
+Writing and installing man pages
